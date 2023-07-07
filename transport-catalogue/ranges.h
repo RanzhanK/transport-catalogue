@@ -24,5 +24,5 @@ namespace ranges {
     };
 
     template<typename C>
-    auto as_range(const C &container) { return Range{container.begin(), container.end()}; }
+    auto AsRange(const C &container) { return Range{container.begin(), container.end()}; }
 }

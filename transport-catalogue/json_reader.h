@@ -17,32 +17,32 @@ namespace transport_catalogue {
 
                 JSONReader(std::istream &input);
 
-                void parse_node_base(const Node &root, TransportCatalogue &catalogue);
+                void ParseNodeBase(const Node &root, TransportCatalogue &catalogue);
 
-                void parse_node_stat(const Node &root, std::vector<StatRequest> &stat_request);
+                void ParseNodeStat(const Node &node, std::vector<StatRequest> &stat_request);
 
-                void parse_node_render(const Node &node, map_renderer::RenderSettings &render_settings);
+                void ParseNodeRender(const Node &node, map_renderer::RenderSettings &rend_set);
 
-                void parse_node_routing(const Node &node, router::RoutingSettings &route_set);
+                void ParseNodeRouting(const Node &node, router::RoutingSettings &route_set);
 
-                void parse_node(const Node &root,
-                                TransportCatalogue &catalogue,
-                                std::vector<StatRequest> &stat_request,
-                                map_renderer::RenderSettings &render_settings,
-                                router::RoutingSettings &routing_settings);
+                void ParseNode(const Node &root,
+                               TransportCatalogue &catalogue,
+                               std::vector<StatRequest> &stat_request,
+                               map_renderer::RenderSettings &render_settings,
+                               router::RoutingSettings &routing_settings);
 
-                void parse(TransportCatalogue &catalogue,
+                void Parse(TransportCatalogue &catalogue,
                            std::vector<StatRequest> &stat_request,
                            map_renderer::RenderSettings &render_settings,
                            router::RoutingSettings &routing_settings);
 
-                Stop parse_node_stop(Node &node);
+                Stop ParseNodeStop(Node &node);
 
-                Bus parse_node_bus(Node &node, TransportCatalogue &catalogue);
+                Bus ParseNodeBus(Node &node, TransportCatalogue &catalogue);
 
-                std::vector<Distance> parse_node_distances(Node &node, TransportCatalogue &catalogue);
+                std::vector<Distance> ParseNodeDistances(Node &node, TransportCatalogue &catalogue);
 
-                const Document &get_document() const;
+                const Document &GetDocument() const;
 
             private:
                 Document document_;

@@ -19,9 +19,9 @@ int main() {
     RequestHandler request_handler;
 
     json_reader = JSONReader(cin);
-    json_reader.parse(catalogue, stat_request, render_settings, routing_settings);
+    json_reader.Parse(catalogue, stat_request, render_settings, routing_settings);
 
     request_handler = RequestHandler();
-    request_handler.execute_queries(catalogue, stat_request, render_settings, routing_settings);
-    transport_catalogue::detail::json::print(request_handler.get_document(), cout);
+    request_handler.ExecuteQueries(catalogue, stat_request, render_settings, routing_settings);
+    transport_catalogue::detail::json::Print(request_handler.GetDocument(), cout);
 }

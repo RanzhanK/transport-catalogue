@@ -30,29 +30,29 @@ namespace transport_catalogue {
 
     class TransportCatalogue {
     public:
-        void add_bus(Bus &&bus);
+        void AddBus(Bus &&bus);
 
-        void add_stop(Stop &&stop);
+        void AddStop(Stop &&stop);
 
-        void add_distance(const std::vector<Distance> &distances);
+        void AddDistance(const std::vector<Distance> &distances);
 
-        Bus *get_bus(std::string_view bus_name);
+        Bus *GetBus(std::string_view bus_name);
 
-        Stop *get_stop(std::string_view stop_name);
+        Stop *GetStop(std::string_view stop_name);
 
-        BusMap get_busname_to_bus() const;
+        BusMap GetBusnameToBus() const;
 
-        StopMap get_stopname_to_stop() const;
+        StopMap GetStopnameToStop() const;
 
-        std::unordered_set<const Bus *> stop_get_uniq_buses(Stop *stop);
+        std::unordered_set<const Bus *> StopGetUniqBuses(Stop *stop);
 
-        std::unordered_set<const Stop *> get_uniq_stops(Bus *bus);
+        std::unordered_set<const Stop *> GetUniqStops(Bus *bus);
 
-        double get_length(Bus *bus);
+        double GetLength(Bus *bus);
 
-        size_t get_distance_stop(const Stop *start, const Stop *finish) const;
+        size_t GetDistanceStop(const Stop *begin, const Stop *finish) const;
 
-        size_t get_distance_to_bus(Bus *bus);
+        size_t GetDistanceToBus(Bus *bus);
 
     private:
         std::deque<Stop> stops;

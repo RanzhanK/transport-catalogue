@@ -18,23 +18,23 @@ namespace transport_catalogue {
 
                 class Builder {
                 public:
-                    Node make_node(const Node::Value &value_);
+                    Node MakeNode(const Node::Value &value_);
 
-                    void add_node(const Node &node);
+                    void AddNode(const Node &node);
 
-                    KeyContext key(const std::string &key_);
+                    KeyContext Key(const std::string &key_);
 
-                    Builder &value(const Node::Value &value);
+                    Builder &Value(const Node::Value &value_);
 
-                    DictionaryContext start_dict();
+                    DictionaryContext StartDict();
 
-                    Builder &end_dict();
+                    Builder &EndDict();
 
-                    ArrayContext start_array();
+                    ArrayContext StartArray();
 
-                    Builder &end_array();
+                    Builder &EndArray();
 
-                    Node build();
+                    Node Build();
 
                 private:
                     Node root_;
@@ -45,17 +45,17 @@ namespace transport_catalogue {
                 public:
                     BaseContext(Builder &builder);
 
-                    KeyContext key(const std::string &key);
+                    KeyContext Key(const std::string &key);
 
-                    Builder &value(const Node::Value &value);
+                    Builder &Value(const Node::Value &value);
 
-                    DictionaryContext start_dict();
+                    DictionaryContext StartDict();
 
-                    Builder &end_dict();
+                    Builder &EndDict();
 
-                    ArrayContext start_array();
+                    ArrayContext StartArray();
 
-                    Builder &end_array();
+                    Builder &EndArray();
 
                 protected:
                     Builder &builder_;
@@ -65,35 +65,35 @@ namespace transport_catalogue {
                 public:
                     KeyContext(Builder &builder);
 
-                    KeyContext key(const std::string &key) = delete;
+                    KeyContext Key(const std::string &key) = delete;
 
                     BaseContext end_dict() = delete;
 
                     BaseContext end_array() = delete;
 
-                    DictionaryContext value(const Node::Value &value);
+                    DictionaryContext Value(const Node::Value &value);
                 };
 
                 class DictionaryContext : public BaseContext {
                 public:
                     DictionaryContext(Builder &builder);
 
-                    DictionaryContext start_dict() = delete;
+                    DictionaryContext StartDict() = delete;
 
-                    ArrayContext start_array() = delete;
+                    ArrayContext StartArray() = delete;
 
-                    Builder &end_array() = delete;
+                    Builder &EndArray() = delete;
 
-                    Builder &value(const Node::Value &value) = delete;
+                    Builder &Value(const Node::Value &value) = delete;
                 };
 
                 class ArrayContext : public BaseContext {
                 public:
                     ArrayContext(Builder &builder);
 
-                    KeyContext key(const std::string &key) = delete;
+                    KeyContext Key(const std::string &key) = delete;
 
-                    Builder &end_dict() = delete;
+                    Builder &EndDict() = delete;
 
                     ArrayContext value(const Node::Value &value);
                 };

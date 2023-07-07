@@ -23,7 +23,7 @@ namespace svg {
         uint8_t blue_ = 0;
     };
 
-    inline void print_color(std::ostream &out, Rgb &rgb);
+    inline void PrintColor(std::ostream &out, Rgb &rgb);
 
     class Rgba {
     public:
@@ -37,14 +37,14 @@ namespace svg {
         double opacity_ = 1.0;
     };
 
-    inline void print_color(std::ostream &out, Rgba &rgba);
+    inline void PrintColor(std::ostream &out, Rgba &rgba);
 
     using Color = std::variant<std::monostate, std::string, Rgb, Rgba>;
     inline const Color NoneColor{"none"};
 
-    inline void print_color(std::ostream &out, std::monostate);
+    inline void PrintColor(std::ostream &out, std::monostate);
 
-    inline void print_color(std::ostream &out, std::string &color);
+    inline void PrintColor(std::ostream &out, std::string &color);
 
     std::ostream &operator<<(std::ostream &out, const Color &color);
 
@@ -95,35 +95,35 @@ namespace svg {
     template<typename Owner>
     class PathProps {
     public:
-        Owner &set_fill_color(const Color &color) {
+        Owner &SetFillColor(const Color &color) {
             fill_color_ = std::move(color);
-            return as_owner();
+            return AsOwner();
         }
 
-        Owner &set_stroke_color(const Color &color) {
+        Owner &SetStrokeColor(const Color &color) {
             stroke_color_ = std::move(color);
-            return as_owner();
+            return AsOwner();
         }
 
-        Owner &set_stroke_width(double width) {
+        Owner &SetStrokeWidth(double width) {
             stroke_width_ = width;
-            return as_owner();
+            return AsOwner();
         }
 
-        Owner &set_stroke_linecap(StrokeLineCap line_cap) {
+        Owner &SetStrokeLinecap(StrokeLineCap line_cap) {
             stroke_line_cap_ = line_cap;
-            return as_owner();
+            return AsOwner();
         }
 
-        Owner &set_stroke_linejoin(StrokeLineJoin line_join) {
+        Owner &SetStrokeLinejoin(StrokeLineJoin line_join) {
             stroke_line_join_ = line_join;
-            return as_owner();
+            return AsOwner();
         }
 
     protected:
         ~PathProps() = default;
 
-        void render_attrs(std::ostream &out) const {
+        void RenderAttrs(std::ostream &out) const {
             using namespace std::literals;
 
             if (fill_color_ != std::nullopt) {
@@ -150,7 +150,7 @@ namespace svg {
         std::optional<StrokeLineCap> stroke_line_cap_;
         std::optional<StrokeLineJoin> stroke_line_join_;
 
-        Owner &as_owner() {
+        Owner &AsOwner() {
             return static_cast<Owner &>(*this);
         }
     };
@@ -170,9 +170,9 @@ namespace svg {
         RenderContext(std::ostream &out, int indent_step, int indent = 0) : out_(out), indent_step_(indent_step),
                                                                             indent_(indent) {}
 
-        RenderContext indented() const;
+        RenderContext Indented() const;
 
-        void render_indent() const;
+        void RenderIndent() const;
 
         std::ostream &out_;
         int indent_step_ = 0;
@@ -181,50 +181,50 @@ namespace svg {
 
     class Object {
     public:
-        void render(const RenderContext &context) const;
+        void Render(const RenderContext &context) const;
 
         virtual ~Object() = default;
 
     private:
-        virtual void render_object(const RenderContext &context) const = 0;
+        virtual void RenderObject(const RenderContext &context) const = 0;
     };
 
     class Circle final : public Object, public PathProps<Circle> {
     public:
-        Circle &set_center(Point center);
+        Circle &SetCenter(Point center);
 
-        Circle &set_radius(double radius);
+        Circle &SetRadius(double radius);
 
     private:
         Point center_;
         double radius_ = 1.0;
 
-        void render_object(const RenderContext &context) const override;
+        void RenderObject(const RenderContext &context) const override;
     };
 
     class Polyline final : public Object, public PathProps<Polyline> {
     public:
-        Polyline &add_point(Point point);
+        Polyline &AddPoint(Point point);
 
     private:
         std::vector<Point> points_;
 
-        void render_object(const RenderContext &context) const override;
+        void RenderObject(const RenderContext &context) const override;
     };
 
     class Text final : public Object, public PathProps<Text> {
     public:
-        Text &set_position(Point pos);
+        Text &SetPosition(Point pos);
 
-        Text &set_offset(Point offset);
+        Text &SetOffset(Point offset);
 
-        Text &set_font_size(uint32_t size);
+        Text &SetFontSize(uint32_t size);
 
-        Text &set_font_family(std::string font_family);
+        Text &SetFontFamily(std::string font_family);
 
-        Text &set_font_weight(std::string font_weight);
+        Text &SetFontWeight(std::string font_weight);
 
-        Text &set_data(std::string data);
+        Text &SetData(std::string data);
 
     private:
         Point position_;
@@ -234,11 +234,11 @@ namespace svg {
         uint32_t font_size_ = 1;
         std::string data_;
 
-        static std::string delete_spaces(const std::string &str);
+        static std::string DeleteSpaces(const std::string &str);
 
-        static std::string uniq_symbols(const std::string &str);
+        static std::string UniqSymbols(const std::string &str);
 
-        void render_object(const RenderContext &context) const override;
+        void RenderObject(const RenderContext &context) const override;
     };
 
     class ObjectContainer {
@@ -246,22 +246,22 @@ namespace svg {
         virtual ~ObjectContainer() = default;
 
         template<typename Obj>
-        void add(Obj obj);
+        void Add(Obj obj);
 
-        virtual void add_ptr(std::unique_ptr<Object> &&) = 0;
+        virtual void AddPtr(std::unique_ptr<Object> &&) = 0;
 
     protected:
         std::vector<std::unique_ptr<Object>> objects_;
     };
 
     template<typename Obj>
-    void ObjectContainer::add(Obj obj) {
+    void ObjectContainer::Add(Obj obj) {
         objects_.emplace_back(std::make_unique<Obj>(std::move(obj)));
     }
 
     class Drawable {
     public:
-        virtual void draw(ObjectContainer &container) const = 0;
+        virtual void Draw(ObjectContainer &container) const = 0;
 
         virtual ~Drawable() = default;
     };
@@ -269,10 +269,10 @@ namespace svg {
     class Document : public ObjectContainer {
     public:
 
-        void add_ptr(std::unique_ptr<Object> &&obj) override {
+        void AddPtr(std::unique_ptr<Object> &&obj) override {
             objects_.emplace_back(std::move(obj));
         }
 
-        void render(std::ostream &out) const;
+        void Render(std::ostream &out) const;
     };
 }
