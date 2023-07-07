@@ -1,19 +1,27 @@
-#include "stat_reader.h"
-#include "input_reader.h"
-#include "transport_catalogue.h"
+#include "json_reader.h"
+#include "map_renderer.h"
+#include "request_handler.h"
 
-#include <iostream>
-
-namespace global {
-    namespace geo {}
-    namespace input_reader {}
-    namespace transport_catalogue {}
-    namespace stat_reader {}
-}
+using namespace std;
+using namespace transport_catalogue;
+using namespace map_renderer;
+using namespace request_handler;
+using namespace transport_catalogue::detail::json;
+using namespace transport_catalogue::detail::router;
 
 int main() {
-    global::transport_catalogue::TransportCatalogue transport_catalogue;
-    global::input_reader::ParseQuery(std::cin, transport_catalogue);
-    global::stat_reader::GetDataBaseInfo(std::cin, transport_catalogue, std::cout);
-    return 0;
+    vector<StatRequest> stat_request;
+    RenderSettings render_settings;
+    TransportCatalogue catalogue;
+    RoutingSettings routing_settings;
+
+    JSONReader json_reader;
+    RequestHandler request_handler;
+
+    json_reader = JSONReader(cin);
+    json_reader.parse(catalogue, stat_request, render_settings, routing_settings);
+
+    request_handler = RequestHandler();
+    request_handler.execute_queries(catalogue, stat_request, render_settings, routing_settings);
+    transport_catalogue::detail::json::print(request_handler.get_document(), cout);
 }

@@ -1,58 +1,67 @@
 #pragma once
 
-#include "geo.h"
-
-#include <set>
-#include <map>
 #include <deque>
-#include <vector>
 #include <string>
-#include <cassert>
+#include <vector>
 #include <iomanip>
 #include <iostream>
-#include <string_view>
 #include <unordered_set>
 #include <unordered_map>
 
-using namespace global::geo;
+#include "domain.h"
 
-namespace global::transport_catalogue {
+using namespace domain;
 
-    struct Stop {
-        std::string name;
-        Coordinates coordinates;
+namespace transport_catalogue {
+
+    struct DistanceHasher {
+        std::hash<const void *> hasher;
+
+        std::size_t operator()(const std::pair<const Stop *, const Stop *> pair_stops) const noexcept {
+            auto hash_1 = static_cast<const void *>(pair_stops.first);
+            auto hash_2 = static_cast<const void *>(pair_stops.second);
+            return hasher(hash_1) * 17 + hasher(hash_2);
+        }
     };
 
-    struct Bus {
-        std::string name;
-        std::vector<const Stop*> stops;
-    };
+    typedef std::unordered_map<std::string_view, Stop *> StopMap;
+    typedef std::unordered_map<std::string_view, Bus *> BusMap;
+    typedef std::unordered_map<std::pair<const Stop *, const Stop *>, int, DistanceHasher> DistanceMap;
 
     class TransportCatalogue {
     public:
-        void AddStop(std::string_view stop, Coordinates coordinates);
-        void AddBus(std::string_view bus, const std::vector<std::string>& stops);
-        void SetDistanceBetweenStops(std::string_view from, std::string_view to, int distance);
-        void BusInfo(std::string query, std::ostream& out = std::cout);
-        void BusesForStopInfo(std::string query, std::ostream& out = std::cout);
-        int DistanceBetweenStops(std::string_view from, std::string_view to) const;
-        std::unordered_set<const Bus*> GetBusesForStop(std::string_view stop) const;
+        void add_bus(Bus &&bus);
 
-        struct Hasher {
-            size_t operator() (const std::pair<const Stop*, const Stop*>& info_) const {
-                auto h1 = hasher_(info_.first->name);
-                auto h2 = hasher_(info_.second->name);
-                return 37 * h1 + h2;
-            }
-            std::hash<std::string> hasher_;
-        };
+        void add_stop(Stop &&stop);
+
+        void add_distance(const std::vector<Distance> &distances);
+
+        Bus *get_bus(std::string_view bus_name);
+
+        Stop *get_stop(std::string_view stop_name);
+
+        BusMap get_busname_to_bus() const;
+
+        StopMap get_stopname_to_stop() const;
+
+        std::unordered_set<const Bus *> stop_get_uniq_buses(Stop *stop);
+
+        std::unordered_set<const Stop *> get_uniq_stops(Bus *bus);
+
+        double get_length(Bus *bus);
+
+        size_t get_distance_stop(const Stop *start, const Stop *finish) const;
+
+        size_t get_distance_to_bus(Bus *bus);
 
     private:
-        std::deque<Stop> stops_;
-        std::deque<Bus> buses_;
-        std::unordered_map<std::string, const Stop*> name_to_stop_;
-        std::unordered_map<std::string, const Bus*> name_to_bus_;
-        std::unordered_map<const Stop*, std::unordered_set<const Bus*>> stop_to_buses_;
-        std::unordered_map<std::pair<const Stop*, const Stop*>, int, Hasher> distances_;
+        std::deque<Stop> stops;
+        StopMap stopname_to_stop;
+
+        std::deque<Bus> buses;
+        BusMap busname_to_bus;
+
+        DistanceMap distance_to_stop;
+
     };
 }
