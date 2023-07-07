@@ -2,6 +2,7 @@
 
 #include "json.h"
 #include "map_renderer.h"
+#include "serialization.h"
 #include "transport_router.h"
 #include "transport_catalogue.h"
 
@@ -25,16 +26,15 @@ namespace transport_catalogue {
 
                 void ParseNodeRouting(const Node &node, router::RoutingSettings &route_set);
 
-                void ParseNode(const Node &root,
-                               TransportCatalogue &catalogue,
-                               std::vector<StatRequest> &stat_request,
-                               map_renderer::RenderSettings &render_settings,
-                               router::RoutingSettings &routing_settings);
+                void ParseNodeSerialization(const Node &node, serialization::SerializationSettings &serialization_set);
 
-                void Parse(TransportCatalogue &catalogue,
-                           std::vector<StatRequest> &stat_request,
-                           map_renderer::RenderSettings &render_settings,
-                           router::RoutingSettings &routing_settings);
+                void ParseNodeMakeBase(TransportCatalogue &catalogue,
+                                       map_renderer::RenderSettings &render_settings,
+                                       router::RoutingSettings &routing_settings,
+                                       serialization::SerializationSettings &serialization_settings);
+
+                void ParseNodeProcessRequests(std::vector<StatRequest> &stat_request,
+                                              serialization::SerializationSettings &serialization_settings);
 
                 Stop ParseNodeStop(Node &node);
 

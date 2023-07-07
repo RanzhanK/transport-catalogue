@@ -5,6 +5,7 @@
 #include <vector>
 #include <iomanip>
 #include <iostream>
+#include <execution>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -40,6 +41,10 @@ namespace transport_catalogue {
 
         Stop *GetStop(std::string_view stop_name);
 
+        std::deque<Stop> GetStops() const;
+
+        std::deque<Bus> GetBuses() const;
+
         BusMap GetBusnameToBus() const;
 
         StopMap GetStopnameToStop() const;
@@ -49,6 +54,8 @@ namespace transport_catalogue {
         std::unordered_set<const Stop *> GetUniqStops(Bus *bus);
 
         double GetLength(Bus *bus);
+
+        DistanceMap GetDistance() const;
 
         size_t GetDistanceStop(const Stop *begin, const Stop *finish) const;
 

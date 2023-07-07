@@ -1,5 +1,4 @@
 #include "transport_catalogue.h"
-#include <execution>
 
 namespace transport_catalogue {
 
@@ -123,5 +122,17 @@ namespace transport_catalogue {
         }
 
         return distance;
+    }
+
+    std::deque<Stop> TransportCatalogue::GetStops() const {
+        return stops;
+    }
+
+    std::deque<Bus> TransportCatalogue::GetBuses() const {
+        return buses;
+    }
+
+    DistanceMap TransportCatalogue::GetDistance() const {
+        return distance_to_stop;
     }
 }
